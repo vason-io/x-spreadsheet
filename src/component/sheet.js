@@ -107,6 +107,12 @@ function selectorMove(multiple, direction) {
     if (ci < cols.len - 1) ci += 1;
   } else if (direction === 'up') {
     if (ri > 0) ri -= 1;
+  } else if (direction === 'page-up') {
+    if (ri > 0) ri -= 10;
+    if (ri < 0) ri = 0;
+  } else if (direction === 'page-down') {
+    ri += 10;
+    if (ri >= rows.len) ri = rows.len - 1;
   } else if (direction === 'down') {
     if (eri !== ri) ri = eri;
     if (ri < rows.len - 1) ri += 1;
@@ -238,9 +244,15 @@ function overlayerMousescroll(evt) {
   const temp = Math.max(tempY, tempX);
   // console.log('event:', evt);
   // detail for windows/mac firefox vertical scroll
-  if (/Firefox/i.test(window.navigator.userAgent)) throttle(moveY(evt.detail), 50);
-  if (temp === tempX) throttle(moveX(deltaX), 50);
-  if (temp === tempY) throttle(moveY(deltaY), 50);
+  if (/Firefox/i.test(window.navigator.userAgent)) { // noinspection JSVoidFunctionReturnValueUsed
+    throttle(moveY(evt.detail), 50);
+  }
+  if (temp === tempX) { // noinspection JSVoidFunctionReturnValueUsed
+    throttle(moveX(deltaX), 50);
+  }
+  if (temp === tempY) { // noinspection JSVoidFunctionReturnValueUsed
+    throttle(moveY(deltaY), 50);
+  }
 }
 
 function overlayerTouch(direction, distance) {
@@ -800,6 +812,18 @@ function sheetInitEvents() {
           selectorMove.call(this, shiftKey, 'col-last');
           evt.preventDefault();
           break;
+        case 36:
+          // ctrl + home
+          selectorMove.call(this, shiftKey, 'row-first');
+          selectorMove.call(this, shiftKey, 'col-first');
+          evt.preventDefault();
+          break;
+        case 35:
+          // ctrl + end
+          selectorMove.call(this, shiftKey, 'row-last');
+          selectorMove.call(this, shiftKey, 'col-last');
+          evt.preventDefault();
+          break;
         case 32:
           // ctrl + space, all cells in col
           selectorSet.call(this, false, -1, this.data.selector.ci, false);
@@ -826,11 +850,20 @@ function sheetInitEvents() {
           }
           break;
         case 27: // esc
+          editor.clear();
           contextMenu.hide();
           clearClipboard.call(this);
           break;
         case 37: // left
           selectorMove.call(this, shiftKey, 'left');
+          evt.preventDefault();
+          break;
+        case 33: // page-up
+          selectorMove.call(this, shiftKey, 'page-up');
+          evt.preventDefault();
+          break;
+        case 34: // page-down
+          selectorMove.call(this, shiftKey, 'page-down');
           evt.preventDefault();
           break;
         case 38: // up
@@ -843,6 +876,16 @@ function sheetInitEvents() {
           break;
         case 40: // down
           selectorMove.call(this, shiftKey, 'down');
+          evt.preventDefault();
+          break;
+        case 36:
+          // home
+          selectorMove.call(this, shiftKey, 'row-first');
+          evt.preventDefault();
+          break;
+        case 35:
+          // end
+          selectorMove.call(this, shiftKey, 'row-last');
           evt.preventDefault();
           break;
         case 9: // tab

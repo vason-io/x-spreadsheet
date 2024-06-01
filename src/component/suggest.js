@@ -56,6 +56,7 @@ function inputKeydownHandler(evt) {
       inputMoveNext.call(this, evt);
       break;
     case 13: // enter
+    case 27: // esc
       inputEnter.call(this, evt);
       break;
     case 9:

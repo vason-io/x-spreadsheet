@@ -133,9 +133,16 @@ const evalSubExpr = (subExpr, cellRender) => {
   if (expr[0] >= '0' && expr[0] <= '9') {
     return ret * Number(expr);
   }
-  const [x, y] = expr2xy(expr);
-  return ret * cellRender(x, y);
+  const [x, y] = expr2xy(expr); //return ret * cellRender(x, y);
+  const val = cellRender(x, y);
+  return isNumberCandidate(val) ? ret * val : val;
 };
+
+const isNumberCandidate = (s) => { // https://stackoverflow.com/a/54442167/19545276
+  const str = (''+ s).trim();
+  if (str.length === 0) return false;
+  return !isNaN(+str);
+}
 
 // evaluate the suffix expression
 // srcStack: <= infixExprToSufixExpr

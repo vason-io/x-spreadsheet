@@ -47,12 +47,16 @@ function insertText({ target }, itxt) {
 
 function keydownEventHandler(evt) {
   const { keyCode, altKey } = evt;
-  if (keyCode !== 13 && keyCode !== 9) evt.stopPropagation();
+  if (keyCode !== 13 && keyCode !== 27 && keyCode !== 9) {
+    evt.stopPropagation();
+  }
   if (keyCode === 13 && altKey) {
     insertText.call(this, evt, '\n');
     evt.stopPropagation();
   }
-  if (keyCode === 13 && !altKey) evt.preventDefault();
+  if (keyCode === 13 && !altKey) {
+    evt.preventDefault();
+  }
 }
 
 function inputEventHandler(evt) {
@@ -125,7 +129,7 @@ function setText(text, position) {
 
 function suggestItemClick(it) {
   const { inputText, validator } = this;
-  let position = 0;
+  let position; // = 0;
   if (validator && validator.type === 'list') {
     this.inputText = it;
     position = this.inputText.length;
