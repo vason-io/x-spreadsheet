@@ -137,10 +137,23 @@ export default class Bottombar {
   }
 
   renameItem(index, value) {
-    this.dataNames.splice(index, 1, value);
+    let newSuffix = 1
+    let found
+    let newName = value
+    do {
+      found = false
+      for (let i = 0, len = this.dataNames.length; i < len; i++) {
+        if( i !== index && this.dataNames[i] === newName ) {
+          newName = value + '_' + (newSuffix++);
+          found = true;
+          break;
+        }
+      }
+    } while (found)
+    this.dataNames.splice(index, 1, newName);
     this.moreEl.reset(this.dataNames);
-    this.items[index].html('').child(value);
-    this.updateFunc(index, value);
+    this.items[index].html('').child(newName);
+    this.updateFunc(index, newName);
   }
 
   clear() {
